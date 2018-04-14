@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+import cgi
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -65,8 +66,11 @@ def newpost():
             db.session.commit()
             return redirect('/blog')
 
-
-    return render_template('newpost.html', title="Enter a post!")
+    btitle = request.args.get("btitle")
+    body = request.args.get("body")
+    terror = request.args.get("terror")
+    berror = request.args.get("berror")
+    return render_template('newpost.html', title="Enter a post!", btitle=btitle and cgi.escape(btitle, quote=True), body=body and cgi.escape(body, quote=True), terror=terror and cgi.escape(terror, quote=True), berror=berror and cgi.escape(berror, quote=True))
 
 @app.route('/login', methods=['POST','GET'])
 def login():
