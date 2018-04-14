@@ -2,25 +2,15 @@
 
 {% block content %}
 
-        <h1>What's going on?</h1>
-        <form method='post'>
-            <label>
-                Title:
-                <input type="text" name='title' size="126" /><br>
-            </label>
-            <textarea name="body" rows="6" cols="100" />Enter blog post here</textarea><br>
-            <input type="submit" value='Post Entry' />
-        </form>
-
-        <hr />
-
+        <h1>A SERIES OF POINTLESS THOUGHTS</h1>
+<br>
         {% if blog|length == 0 %}
         <p>No entries yet</p>
         {% else %}
 
 
                 {% for blog_entry in blog %}
-                {{blog_entry.title}}
+                <h2>{{blog_entry.title}}</h2>
                     <br>
                     {{blog_entry.body}}
                     <hr />

@@ -25,8 +25,12 @@ class Blog(db.Model):
 #    if request.endpoint not in allowed_routes and 'email' not in session:
 #        return redirect ('/login')
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/')
 def index():
+    return redirect('/blog')
+
+@app.route('/blog', methods=['POST', 'GET'])
+def blog():
 
     if request.method == 'POST':
         title = request.form['title']
@@ -37,6 +41,32 @@ def index():
 
     blog = Blog.query.all()
     return render_template('blog.html', title="Blogs y'all!", blog=blog)
+
+@app.route('/newpost', methods=['POST', 'GET'])
+def newpost():
+
+    if request.method == 'POST':
+        btitle = request.form['btitle']
+        body = request.form['body']
+        terror = ""
+        berror = ""
+
+        if (not btitle) or (btitle.strip() == ""):
+            terror = "You must write a title."
+
+        if (not body) or (body.strip() == ""):
+            berror = "You must write a blog entry if you want your freedom."
+
+        if len(terror)>0 or len(berror)>0:
+            return redirect("/newpost?terror=" + terror + "&berror=" + berror + "&btitle=" + btitle + "&body=" + body)
+        else:
+            new_entry = Blog(btitle, body)
+            db.session.add(new_entry)
+            db.session.commit()
+            return redirect('/blog')
+
+
+    return render_template('newpost.html', title="Enter a post!")
 
 @app.route('/login', methods=['POST','GET'])
 def login():

@@ -3,12 +3,23 @@
 {% block content %}
 
         <h1>What's going on?</h1>
-        <form method='post'>
+        <form action="/newpost" method='post'>
             <label>
                 Title:
-                <input type="text" name='title' size="126" /><br>
+                <input type="text" name='btitle' size="126" {% if btitle %} value='{{ btitle }}' {% endif %}/><br>
             </label>
-            <textarea name="body" rows="6" cols="100" />Enter blog post here</textarea><br>
+            {% if terror %}
+            <p class='error'>{{ terror }}</p>
+            {% endif %}
+            <br>
+            <label>
+                Enter blog post:<br>
+                <textarea name="body" rows="6" cols="100" />{% if body %}{{ body }}{% endif %}</textarea>
+            </label>
+            {% if berror %}
+            <p class='error'>{{ berror }}</p>
+            {% endif %}
+            <br>
             <input type="submit" value='Post Entry' />
         </form>
 
