@@ -29,12 +29,12 @@ def index():
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
 
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
-        new_entry = Blog(title, body)
-        db.session.add(new_entry)
-        db.session.commit()
+#    if request.method == 'POST':
+#        title = request.form['title']
+#        body = request.form['body']
+#        new_entry = Blog(title, body)
+#        db.session.add(new_entry)
+#        db.session.commit()
 
     blog_id = request.args.get("id")
     if blog_id:
