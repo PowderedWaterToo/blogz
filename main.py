@@ -29,13 +29,6 @@ def index():
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
 
-#    if request.method == 'POST':
-#        title = request.form['title']
-#        body = request.form['body']
-#        new_entry = Blog(title, body)
-#        db.session.add(new_entry)
-#        db.session.commit()
-
     blog_id = request.args.get("id")
     if blog_id:
         blog = Blog.query.get(blog_id)
@@ -48,8 +41,8 @@ def blog():
 def newpost():
 
     if request.method == 'POST':
-        btitle = request.form['btitle']
-        body = request.form['body']
+        btitle = cgi.escape(request.form['btitle'], quote=True)
+        body = cgi.escape(request.form['body'], quote=True)
         terror = ""
         berror = ""
 
@@ -72,7 +65,7 @@ def newpost():
     body = request.args.get("body")
     terror = request.args.get("terror")
     berror = request.args.get("berror")
-    return render_template('newpost.html', title="Enter a post!", btitle=btitle and cgi.escape(btitle, quote=True), body=body and cgi.escape(body, quote=True), terror=terror and cgi.escape(terror, quote=True), berror=berror and cgi.escape(berror, quote=True))
+    return render_template('newpost.html', title="Enter a post!", btitle=btitle, body=body, terror=terror, berror=berror)
 
 
 if __name__ == '__main__':
