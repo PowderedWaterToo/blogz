@@ -20,15 +20,11 @@ class Blog(db.Model):
         self.title = title
         self.body = body
 
-#@app.before_request
-#def require_login():
-#    allowed_routes = ['login', 'register']
-#    if request.endpoint not in allowed_routes and 'email' not in session:
-#        return redirect ('/login')
 
 @app.route('/')
 def index():
     return redirect('/blog')
+
 
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
@@ -46,6 +42,7 @@ def blog():
         return render_template('blog_single.html', title="Blogs y'all!", blog=blog)
     blog = Blog.query.all()
     return render_template('blog.html', title="Blogs y'all!", blog=blog)
+
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
@@ -76,60 +73,6 @@ def newpost():
     terror = request.args.get("terror")
     berror = request.args.get("berror")
     return render_template('newpost.html', title="Enter a post!", btitle=btitle and cgi.escape(btitle, quote=True), body=body and cgi.escape(body, quote=True), terror=terror and cgi.escape(terror, quote=True), berror=berror and cgi.escape(berror, quote=True))
-
-@app.route('/login', methods=['POST','GET'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user = User.query.filter_by(email=email).first()
-        if user and user.password == password:
-            session['email'] = email
-            flash("logged in")
-            print(session)
-            return redirect('/')
-        else:
-            flash('user info is bunk', 'error')
-
-    return render_template('login.html')
-
-@app.route('/register', methods=['POST','GET'])
-def register():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        verify = request.form['verify']  
-        
-        #TODO - validate user's data
-
-        existing_user = User.query.filter_by(email=email).first()
-        if not existing_user:
-            new_user = User(email, password)
-            db.session.add(new_user)
-            db.session.commit()
-            session['email'] = email
-            return redirect('/')
-        else:
-            #TODO - use better message
-            return '<h1>Duplicate user</h1>'
-        
-    return render_template('register.html')
-
-@app.route('/logout')
-def logout():
-    del session['email']
-    return redirect('/')
-
-@app.route('/delete-task', methods=['POST'])
-def delete_task():
-
-    task_id = int(request.form['task-id'])
-    task = Task.query.get(task_id)
-    task.completed = True
-    db.session.add(task)
-    db.session.commit()
-
-    return redirect('/')
 
 
 if __name__ == '__main__':
