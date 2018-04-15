@@ -9,12 +9,11 @@
         {% else %}
 
 
-                {% for blog_entry in blog %}
-                <h2>{{blog_entry.title}}</h2>
-                    <br>
-                    {{blog_entry.body}}
-                    <hr />
-                {% endfor %}
+        {% for blog_entry in blog %}
+        <h2><a href="/blog?id={{blog_entry.id}}">{{blog_entry.title}}</a></h2>
+        {{blog_entry.body}}
+                <hr />
+        {% endfor %}
 
         {% endif %}
 {% endblock %}

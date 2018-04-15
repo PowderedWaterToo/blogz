@@ -40,6 +40,10 @@ def blog():
         db.session.add(new_entry)
         db.session.commit()
 
+    blog_id = request.args.get("id")
+    if blog_id:
+        blog = Blog.query.get(blog_id)
+        return render_template('blog_single.html', title="Blogs y'all!", blog=blog)
     blog = Blog.query.all()
     return render_template('blog.html', title="Blogs y'all!", blog=blog)
 
@@ -64,7 +68,8 @@ def newpost():
             new_entry = Blog(btitle, body)
             db.session.add(new_entry)
             db.session.commit()
-            return redirect('/blog')
+            new_entry_id = str(new_entry.id)
+            return redirect('/blog?id=' + new_entry_id)
 
     btitle = request.args.get("btitle")
     body = request.args.get("body")
