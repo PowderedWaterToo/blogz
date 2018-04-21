@@ -41,13 +41,19 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
+        if user and user.password != password:
+            flash("Your password is wrong! You fool!", 'error')
+            print(session)
+            return redirect('/login')
+        if not user:
+            flash("That username doesn't exist! I can't believe you!", 'error')
+            print(session)
+            return redirect('/login')
         if user and user.password == password:
             session['username'] = username
-            flash("logged in")
+            flash("logged in, now get write'n!")
             print(session)
             return redirect('/newpost')
-        else:
-            flash('user info is bunk', 'error')
 
     return render_template('login.html')
 
@@ -57,26 +63,43 @@ def register():
         username = request.form['username']
         password = request.form['password']
         verify = request.form['verify']  
-        
-        #TODO - validate user's data
-
         existing_user = User.query.filter_by(username=username).first()
-        if not existing_user:
+        
+        if existing_user:
+            flash("EXISTING USER!", 'error')
+            print(session)
+            return redirect('/signup')
+        if not username or not password or not verify:
+            flash("You must fill in all three fields! Why are you so lazy?", 'error')
+            print(session)
+            return redirect('/signup')
+        if password != verify:
+            flash("I know this is hard, but your password needs to match the verified password!", 'error')
+            print(session)
+            return redirect('/signup')      
+        if len(password)<3 or len(username)<3:
+            flash("Put a little more effort in and make sure your username and password are both over three characters long", 'error')
+            print(session)
+            return redirect('/signup')   
+        else:
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
+            print(session)
             return redirect('/newpost')
-        else:
-            #TODO - use better message
-            return '<h1>Duplicate user</h1>'
-        
+
     return render_template('signup.html')
 
 @app.route('/logout')
 def logout():
-    del session['username']
-    return redirect('/')
+    if session.get('username') is not None:
+        del session['username']
+        return redirect('/blog')
+    else:
+        flash("Dude, you're not even logged in", 'error')
+        print(session)
+        return redirect('/blog')   
 
 
 @app.route('/')
