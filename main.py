@@ -36,7 +36,7 @@ class Blog(db.Model):
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'register', 'index', 'blog']
+    allowed_routes = ['login', 'register', 'index', 'blog', 'logout']
     if request.endpoint not in allowed_routes and 'username' not in session:
         flash("You must sign in to create a post", 'error')
         return redirect ('/login')
