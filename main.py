@@ -20,7 +20,7 @@ class User(db.Model):
         self.password = password
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return self.username
 
 class Blog(db.Model):
 
@@ -34,9 +34,18 @@ class Blog(db.Model):
         self.body = body
         self.user = user
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'register', 'index', 'blog']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        flash("You must sign in to create a post", 'error')
+        return redirect ('/login')
 
 @app.route('/login', methods=['POST','GET'])
 def login():
+    if session.get('username') is not None:
+        flash("Dude, you're already logged in. Logout first, if you want to.", 'error')
+        return redirect('/blog')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -101,19 +110,23 @@ def logout():
         print(session)
         return redirect('/blog')   
 
-
 @app.route('/')
 def index():
-    return redirect('/blog')
+    users = User.query.all()
+    return render_template('index.html', title="Blogs y'all!", users=users)
 
 
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
 
     blog_id = request.args.get("id")
+    blog_user = request.args.get("user")
     if blog_id:
         blog = Blog.query.get(blog_id)
         return render_template('blog_single.html', title="Blogs y'all!", blog=blog)
+    if blog_user:
+        blog = Blog.query.filter_by(owner_id=blog_user).all()
+        return render_template('blog.html', title="Blogs y'all!", blog=blog)
     blog = Blog.query.all()
     return render_template('blog.html', title="Blogs y'all!", blog=blog)
 

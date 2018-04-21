@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+        <h1>A List of Sad Fools</h1>
+<br>
+        {% if users|length == 0 %}
+        <p>No fools yet upon which we can heap pitty</p>
+        {% else %}
+
+
+        {% for user in users %}
+        <h2><a href="/blog?user={{user.id}}">{{user.username}}</a></h2>
+        {% endfor %}
+
+        {% endif %}
+{% endblock %}

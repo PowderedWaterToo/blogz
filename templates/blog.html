@@ -12,6 +12,8 @@
         {% for blog_entry in blog %}
         <h2><a href="/blog?id={{blog_entry.id}}">{{blog_entry.title}}</a></h2>
         {{blog_entry.body}}
+        <br><br>
+        written by <a href="/blog?user={{blog_entry.owner_id}}">{{blog_entry.user}}</a>
                 <hr />
         {% endfor %}
 
